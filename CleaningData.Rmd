@@ -1,0 +1,200 @@
+---
+title: "Week1 - Getting and Cleaning Data"
+author: "Sumit"
+date: "8/17/2021"
+output:
+  html_document:
+    df_print: paged
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+
+## what are we going to cover in this course: 
+One of the major components of a data scientist's job is to collect and clean data. 
+In this course we will learn to collect data from various sources and various formats.
+This includes sources such as:--
+* Data Collection
+        + Raw files (csv, xlsx)
+        + Databases (MySQL)
+        + APIs
+
+* Data Formats
+        + Flat files (csv, txt)
+        + XML
+        + JSON
+
+* Making data tidy
+* Distributing data
+* Scripting for data cleaning
+
+## Raw Data vs Processed Data
+Raw data is taken from the source and often hard to use for analysis. Raw data 
+needs to be processed so that it can be used for analysis. Processing may involve
+merging, subsetting, transforming etc. Each process should be recorded. 
+
+## The components of the tidy data
+#### What we need to have after we convert the data from Raw data to Tidy data
+1. Raw Data
+2. Tidy data 
+3. Meta data i.e. code book describing each variable and its values in Tidy data
+4. An explicit and exact recipe we used to go from step 1 to 2
+
+#### What a raw data may look like
+1. A strange binary file your computer spits out
+2. The unformatted excel with 10 worksheets
+3. A complicated JSON data we got from scrapping the Twitter API
+
+#### Raw data Don'ts:--
+1. Run any software on the data
+2. Manipulate anything 
+3. Remove anything from the dataset
+4. Summarize the data 
+
+#### How should a Tidy data look like
+1. Each variable that you measure should be in one column
+2. Each observation should be in different row
+3. There should be one table for each kind of variable
+4. If you have multiple tables, there should be a unique ID connecting them. 
+
+#### The code book shall have information about :--
+1. variables (including units)
+2. Summary choices (mean / median revenue)
+3. Experimental study design 
+
+#### Converting the raw file into a tidy dataset:--
+1. This should ideally be a script
+2. The input to this script shall be the raw data and the output shall be the tidy data
+3. There should be no parameters in this script and everything shall be fixed
+
+In some cases where it's not possible to script every script, you should provide 
+clear instructions like - 
+* Step 1: Take the raw file and summarize ...
+* Step 2: ...
+
+## Downloading data
+### Checking and creating directories
+**file.exist(directory name)** this will check if the directory exist  
+**dir.create(directory name)** this will create a directory
+
+```{r}
+file.exists("tempdir")
+```
+
+### Getting the data from internet
+**download.file(*<url>*)** this will download file from internet
+
+For this section, we will be using data from Baltimore traffic data. 
+The link for this is given below:
+
+[https://data.baltimorecity.gov/datasets/fixed-speed-cameras/explore?location=39.300050%2C-76.582539%2C11.91](https://data.baltimorecity.gov/datasets/fixed-speed-cameras/explore?location=39.300050%2C-76.582539%2C11.91)
+
+### Other places to get the datasets for analysis
+1. [https://www.kaggle.com/datasets](https://www.kaggle.com/datasets)  
+2. [https://www.kaggle.com/kkhandekar/covid-vaccination-stats-in-new-zealand?select=Cumulative.csv](https://www.kaggle.com/kkhandekar/covid-vaccination-stats-in-new-zealand?select=Cumulative.csv)  
+3. [Free public datasets for analysis](https://www.tableau.com/learn/articles/free-public-data-sets)  
+4. [AWS Open Datasets](https://registry.opendata.aws/)  
+5. [XLSX data](https://www.datarefuge.org/dataset?res_format=XLSX)  
+
+## Downloading process
+
+```{r}
+fileUrl <- "https://www.kaggle.com/kkhandekar/covid-vaccination-stats-in-new-zealand?select=Cumulative.csv"
+
+if (!file.exists("data")){
+        dir.create(".\\data")
+        print('New directory data created')
+} else print('Directory data already exist')
+```
+
+```{r}
+setwd(".\\data")
+download.file(fileUrl, destfile = 'covidcase.csv', method = 'curl')
+dateDownload = date()
+list.files('.\\')
+dateDownload
+```
+
+# Reading local files
+You can read local files using read.table() and read.csv() functions
+
+## Reading CSV files
+
+```{r}
+
+covidData <- read.table('.\\data\\Cumulative.csv', sep = ',', header = TRUE)
+head(covidData, 5)
+
+```
+
+You can also use read.csv files if you have a csv files
+
+```{r}
+covidData <- read.csv(".\\data\\Cumulative.csv")
+head(covidData, 5)
+```
+
+##### Parameters you can pass along with read.csv()
+* quote-- set quote as "'" which means there are quotes single quote in the data
+* na.strings-- any specific things defining na's like 9, -99 etc. 
+* nrows-- how many rows we want to read
+* skip-- how many line we have to skip before statrting to read
+
+## Read XLSX files
+
+**Downloading the file using the same download.file() function, which is agnostic
+of the file type.** 
+```{r}
+fileUrl <- "https://www.datarefuge.org/dataset/e26d379e-05d9-4ed3-8d1f-9e44738149d8/resource/bd3902e5-cf0f-4198-96de-8c48eb06563e/download/internet_enabled_mobile_phone_use_by_gender.xlsx"
+
+download.file(fileUrl, destfile = '.\\data\\mobileUsage.xlsx', method = 'curl')
+dateDownload <- date() 
+list.files(".\\data\\")
+dateDownload
+```
+
+Read the files using read.xlsx() / read.xlsx2()  function.   
+These functions can be found in **XLSX Package**
+
+<span style="color: red;">**If there are issues in running the xlsx function, please refer to the** 
+**the link below** </span>
+
+[XLSX does't work](https://www.coursera.org/learn/data-cleaning/discussions/forums/pYncWij2Eea8jw6UvTi2Tw/threads/b5TU4RX-EeawWRJ2-Hqumw/replies/EEX_OBYMEea44Qp49aJR6w)
+
+1. Install 3 packages: xlsx, rJava, xlsjars
+2. Install the right version (32/64bits) of Java at http://java.com/en/download/win10.jsp
+3. Load the 3 packages using library(). 
+
+
+```{r}
+library(xlsx)
+dat <- read.xlsx(".\\data\\cumulative_xl.xlsx", sheetIndex = 1, header = T )
+head(dat)
+```
+
+if you only want to select a few columns and few rows, we can use parameters like 
+colindex and rowIndex
+
+```{r}
+library (xlsx)
+subData <- read.xlsx(".\\data\\cumulative_xl.xlsx", sheetIndex = 1, header = T,
+                     colIndex = 1:3, rowIndex = 1:5)
+subData
+```
+## Other useful notes
+* We can use *write.xlsx* function to write in excel
+* *read.xlsx2* is faster in reading excel files but can be unstable when reading
+subset of rows
+* **XLConnect** package is very useful if we are doing heavy excel functions.
+* **XLConnect vignette** is a great place to start to learn about these packages
+* We should save our data in a database or in a csv, tab / txt file 
+
+
+
+
+
+
+
+
