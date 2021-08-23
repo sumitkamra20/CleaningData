@@ -1,0 +1,180 @@
+---
+title: "Data.Table package"
+author: "Sumit Kamra"
+date: "8/23/2021"
+output:
+  slidy_presentation: default
+  ioslides_presentation: default
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Data.table package  
+The data.table package is extremely fast way to process the data as the code is
+written in C. This comes with slightly difficult to remember syntax though. 
+
+* All functions that accepts data frame also work with data.table
+* Much faster at subsetting, group and updating.
+
+## Creating tables just like data frame
+```{r}
+set.seed(10)
+df <- data.frame(x = rnorm(9), y = sample(1:100, 9), 
+                 z = rep(c('a','b','c'), each = 3))
+head(df, 3)
+```
+
+```{r}
+library(data.table)
+set.seed(10)
+dt <- data.table(x = rnorm(9), y = sample(1:100, 9), 
+                 z = rep(c('a','b','c'), each = 3))
+head(dt, 3)
+```
+## Checking how many tables have been created
+```{r}
+tables()
+```
+It tell us which all data tables have been created, how many rows, columns, and 
+if there is any key. 
+
+## subsetting the data tables (same as data frames)
+
+```{r}
+dt[2,] 
+```
+```{r}
+dt[dt$z=='a',c('x', 'z')]
+```
+
+## Subsetting rows 
+If we only specifiy one element in while subsetting, it subsets the rows. 
+```{r}
+dt[c(2,3)]
+```
+## This is different for data frame where columns subset 
+```{r}
+df[c(2,3)]
+```
+## Let's try to subset columns in the data table
+```{r}
+dt[,c(2,3)]
+```
+## Columns subsetting in data.table
+* The subsetting function is modified for data table
+* The argument you pass after a comma is called an expression
+* In R, the expression is a collection of statement enclosed in a curly brackets
+
+```{r}
+{
+        x = 1
+        y = 1
+}
+k = {print(10); 5}
+
+```
+
+```{r}
+print(k)
+```
+## Calculating values for variables with expressions
+in data tables, for columns, you can pass a list of functions that you want to 
+apply on the variables. In the example below, we will calculate a mean of x and 
+sum of y in the data table object - dt
+```{r}
+dt[,list(mean(x), sum(y))]
+```
+
+.. And here we are producing a table of variable z 
+```{r}
+dt[,table(z)]
+```
+## Adding new columns: 
+
+```{r}
+dt[, pr:=x*y]
+
+dt
+
+```
+## Multiple step operation 
+
+```{r}
+# Removing the variable pr
+dt[, pr:= NULL ]
+# Adding a new variables m through multiple operation.
+dt[, m:= {tmp <- x+y; log(tmp+5)}]
+dt
+```
+## Plyr like operations
+Adding new variables based on conditions. In this example, we will add a column
+to indicate if y is great or less than 50. 
+
+```{r}
+dt[,m:= NULL]
+dt[, y_lessthan_50:= y<50 ]
+dt
+```
+## Adding a column with a condition
+```{r}
+dt[,y_lessthan_50:= NULL]
+dt[, y_status:= NULL]
+dt[,y_status:= { 
+        tmp = y<30 ; tmp
+        }
+   ]
+dt
+```
+The experiment above didn't work
+
+## Plyr like operations - group by (by keyword)
+
+```{r}
+dt[, m:= mean(y), by=y_status]
+dt
+
+```
+it calculates aggregated mean of y, aggregated over the variable we use in 'by'
+
+## Special variables
+.N is a special variables which is an integer
+* It contains no of times that a group appear in the data table
+
+Now I am creating a data table with multiple nos of letter
+```{r}
+lt <- data.table(x = sample(c("a", "b", "c"), 1E5, replace = T))
+```
+
+Now I am using .N grouped by x
+```{r}
+lt[,.N, by=x]
+
+```
+## Keys
+Unique aspect of data tables is that you can set keys which speeds up the process
+of subsetting, sorting etc. 
+
+```{r}
+ndt <- data.table(x = sample(c ("a", "b", "c"), 100, T), y=rnorm(100))
+setkey(ndt, x)
+head(ndt["a"], 10)
+```
+Showing only the rows with x = "a" because x is assigned as the key. 
+
+## Joins
+Setting key is immensly useful when joining the two data tables. 
+The example below
+
+```{r}
+dt1 <- data.table(x=c("a","b", "c"), y=11:13)
+dt2 <- data.table(x=c("a", "m", "c", "b"), z=1:4)
+setkey(dt1, x)
+setkey(dt2, x)
+merge(dt1, dt2)
+
+```
+
+
+

@@ -1,0 +1,91 @@
+---
+title: "Reading XML JSON Files"
+author: "Sumit Kamra"
+date: "8/19/2021"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+# Reading XML Files
+
+### Reading the XML file and finding it's nodes
+The code below uses XML library, reads an XML file and find the root nodes.   
+In this example below, I had to use the GET function as directly passing the
+url in xmlUrl didn't work. 
+
+```{r}
+library(XML)
+library(httr)
+fileUrl <- "https://www.w3schools.com/xml/simple.xml"
+r = GET(fileUrl)
+doc <- xmlTreeParse(r, useInternalNodes = TRUE, isURL = TRUE)
+rootNode <- xmlRoot(doc)
+xmlName(rootNode)
+
+```
+### Accessing the part of XML file
+#### The first food node
+```{r}
+rootNode[1]
+
+```
+
+```{r}
+rootNode[[1]]
+```
+
+#### Accessing subnodes 
+In this example, we are accessing the second subnode with first node. We can also 
+access the content through xmlValue function:--- 
+```{r}
+rootNode[[1]][[2]]
+
+xmlValue(rootNode[[1]][[2]])
+```
+This can also be performed on all the nodes with an xmlSApply function 
+
+```{r}
+xmlSApply(rootNode[[1]], xmlValue)
+class(xmlSApply(rootNode[[1]], xmlValue))
+```
+
+While using xmlApply function would return a list
+```{r}
+xmlApply(rootNode[[1]], xmlValue)
+class(xmlApply(rootNode[[1]], xmlValue))
+```
+# Using XPath to extract elements
+#### XPath is an entirely different language
+* /node - top level node
+* //node - node at any level 
+* node[@attr-name] - node with an attribute name
+* node[@attr-name ='bob] - node with attribute name = 'bob' 
+
+The example below extracts name, price and description of rootNode and turns it
+into a data frame. 
+
+```{r}
+name = xpathSApply(rootNode, '//name', xmlValue)
+price = xpathSApply(rootNode, '//price', xmlValue)
+desc = xpathSApply(rootNode, '//description', xmlValue)
+d<- data.frame(
+        name, price, desc
+)
+d
+```
+```{r}
+fileUrl <- "https://www.espn.com/nfl/team/stats/_/name/bal"
+r<- GET(fileUrl)
+doc <- htmlTreeParse(r, useInternalNodes = TRUE)
+rootNode <- xmlRoot(doc)
+
+names(rootNode)
+
+
+```
+
+
+
