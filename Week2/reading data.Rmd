@@ -1,0 +1,88 @@
+---
+title: 'Week 2: Getting Data from Various Sources'
+author: "Sumit Kamra"
+date: "8/24/2021"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Installing RMySQL package
+
+[Installation instructions used](https://www.ah-ruhe.de/2013/07/23/installing-rmysql-under-windows/)
+
+## Connecting with MySQL database
+
+[UCSC Genome MySQL Page](https://genome.ucsc.edu/goldenPath/help/mysql.html)
+
+```{r}
+library(RMySQL)
+uscDb <- dbConnect(MySQL(), user = "genome",
+                host = "genome-mysql.soe.ucsc.edu")
+result <- dbGetQuery(uscDb, "show databases;")
+dbDisconnect(uscDb)
+
+```
+```{r}
+head(result)
+```
+## Access a particular database "hg19" from the genome databases
+
+```{r}
+hg19 <- dbConnect(MySQL(), user = "genome", db = "hg19",
+                  host = "genome-mysql.soe.ucsc.edu")
+allTabs <- dbListTables(hg19)
+length(allTabs)
+
+```
+#### Listing all fields in hg19 database
+```{r}
+allTabs[1:10]
+```
+#### List all fields in a particular table in hg19 database
+```{r}
+dbListFields(hg19,"affyExonProbeAmbiguous" )
+```
+#### Querying a table from the database
+```{r}
+dbGetQuery(hg19, "select count(*) from affyExonProbeAmbiguous")
+
+```
+
+#### Read from the table using dbReadTable command
+```{r}
+data <- dbReadTable(hg19, "affyExonProbeAmbiguous")
+head(data)
+
+```
+## Selecting a subset from a table 
+#### Use dbSendQuery command to extract a subset of a table
+
+```{r}
+query <- dbSendQuery(hg19, 
+        "select * from affyExonProbeAmbiguous where bin between 500 and 1500")
+dat <- fetch(query)
+head(dat)
+
+```
+#### Use fetch 
+```{r}
+datSmall <- fetch(query,n=10)
+dim(datSmall)
+dbClearResult(query)
+```
+```{r}
+dbDisconnect(hg19)
+```
+
+## Important references
+
+[**Click here to know more about advanced DBI usage**](https://cran.r-project.org/web/packages/DBI/vignettes/DBI-advanced.html)
+
+[MySQL commands](https://www.pantz.org/software/mysql/mysqlcommands.html)
+
+[R Bloggers MySQL and R](https://www.r-bloggers.com/2011/08/mysql-and-r/)
+
+
