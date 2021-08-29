@@ -1,0 +1,46 @@
+---
+title: "Reading HDF5 Files"
+author: "Sumit Kamra"
+date: "8/25/2021"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## What is HDF5
+HDF5 is Hierarchical Data Formats.   
+
+The Hierarchical Data Format version 5 (HDF5), is an open source file format that supports large, complex, heterogeneous data. HDF5 uses a "file directory" like structure that allows you to organize data within the file in many different structured ways, as you might do with files on your computer. The HDF5 format also allows for embedding of metadata making it self-describing.  
+
+[**Click here to know more**](https://www.neonscience.org/resources/learning-hub/tutorials/about-hdf5)
+[**Some high level rhdf5 functions**](https://www.bioconductor.org/packages/devel/bioc/vignettes/rhdf5/inst/doc/rhdf5.html)
+
+## Download package to read HDF5 files: RHDF5 package
+
+* install.packages("BiocManager")
+* BiocManager::install("rhdf5")
+
+```{r}
+library(rhdf5)
+created <- h5createFile("firsthdf.h5")
+created
+```
+
+## Creating groups in hdf5 files
+```{r}
+created = h5createGroup("firsthdf.h5", "foo")
+created = h5createGroup("firsthdf.h5", "bar")
+created = h5createGroup("firsthdf.h5", "foo/foobar")
+created = h5createGroup("firsthdf.h5", "bar/newbar")
+created = h5createGroup("firsthdf.h5", "bar/goldenbar")
+h5ls("firsthdf.h5")
+```
+
+## Reading and Writing in hdf5 files. 
+* h5write(data, "hdf5 file", "dataset name")
+* readA = h5read("file name", "dataset name")
+
+
+

@@ -1,0 +1,74 @@
+---
+title: "Reading API"
+author: "Sumit Kamra"
+date: "8/26/2021"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Useful references: 
+* [introduction to web scraping](https://nceas.github.io/oss-lessons/data-liberation/intro-webscraping.html)
+* 
+
+## API
+API is Application Programming Interface.   
+
+[**Github tutorial for accessing Github API**](https://github.com/r-lib/httr/blob/master/demo/oauth2-github.r)
+
+[**Github httr tutorial**](https://github.com/r-lib/httr)
+
+Need to covered later through tutorials. Refer to the file named 
+JHU lecture - readingFromAPIs.pdf
+
+## Data from other sources
+
+If you are looking to pull data from other sources (and there are tons of souces)
+In general the best way to search R package is to use query like this: 
+*data store mechanism R Package*  
+
+For example:  
+*MySQL R Package*  
+
+## Functions to manipulate connections
+
+```{r connections}
+?connections
+```
+
+**ALWAYS REMEMBER TO CLOSE A CONNECTION**
+
+## Foreign package
+Functions used to access files from other software
+
+General Syntax:--- read.xxx (xxx is file extension of other software)
+* read.arff(Weka Files)
+* read.dta (Stata)
+* read.mtp (Minitab)
+* read.octave (Octave)
+* read.spss (SPSS)
+* read.xport (SAS)
+
+**For more information please click use the link below**  
+["https://cran.r-project.org/web/packages/foreign/foreign.pdf"]("https://cran.r-project.org/web/packages/foreign/foreign.pdf")
+
+## Reading from other sources such as:  
+* Databases
+* Images (jpeg, png, EBIimage)
+* GIS Data
+* tuneR / seewave for musical data
+
+**Please refer to the file JHU lecture - readingFromOtherSources.pdf** 
+
+
+
+
+
+
+
+
+
+
+

@@ -1,0 +1,67 @@
+---
+title: "Reading Web Data"
+author: "Sumit Kamra"
+date: "8/25/2021"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Webscraping
+Reading data programmatically from the web is called web scraping. 
+
+The link here is extremely interesting. [How Netflix reverse engineered hollywood ](https://www.theatlantic.com/technology/archive/2014/01/how-netflix-reverse-engineered-hollywood/282679/)
+
+#### We will be using the Google Scholar link here: 
+
+[Google Scholar - Jeff Leak Page](https://scholar.google.com/citations?user=HI-I6C0AAAAJ&hl=en)
+
+In the code below, we wil open a connection to a url and read out a few lines
+from the web page. 
+```{r setconnection}
+con <- url('https://scholar.google.com/citations?user=HI-I6C0AAAAJ&hl=en')
+htmlText <- readLines(con, 2)
+close(con)
+
+
+```
+
+#### Using the get command fro httr package
+```{r useGET}
+library(httr)
+library(XML)
+urlText <- 'https://scholar.google.com/citations?user=HI-I6C0AAAAJ&hl=en'
+con <- GET(urlText)
+htmlText <- content(con, as="text")
+parsedHtml <- htmlParse(htmlText, asText = T)
+xpathSApply(parsedHtml, "//title", xmlValue)
+
+```
+```{r GETauthicatedapps}
+library(httr)
+pg2 <- GET('https://httpbin.org/basic-auth/user/passwd',
+           authenticate("user", "passwd"))
+pg2
+
+```
+```{r listing_names}
+names(pg2)
+```
+#### Usig handles: 
+If you assign a handle once, you can use it to get the webpage through GET
+multiple times, and if you authticate once, the cookies will stay and you 
+wont need to authenticate again. 
+
+```{r using_handles}
+google <- handle("http://google.com")
+pg1 <- GET(handle=google, path = "/")
+pg2 <- GET(handle=google, path = "search")
+pg1
+pg2
+```
+## Tips: 
+* Use r-bloggers and search for webscraping [Link](https://cse.google.com/cse?cx=005359090438081006639%3Apaz69t-s8ua&ie=UTF-8&q=web+scraping&sa=Go)
+* 
+
