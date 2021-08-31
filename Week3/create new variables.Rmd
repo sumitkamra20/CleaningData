@@ -1,0 +1,132 @@
+---
+title: "Creating New Variables"
+author: "Sumit Kamra"
+date: "8/30/2021"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Why create new variables
+* Missingness indicators
+* "cutting up" the quantitative data to create factors from numeric data
+* Applying transformation
+
+#### We will be using the baltimore restaurants data for this exercise 
+```{r}
+resData <- read.csv("Restaurants.csv")
+```
+
+#### Using sequencing to create indices for your datasets
+
+```{r}
+s <- seq(1,10, by=2); s
+```
+```{r}
+s<- seq(1,10, length = 4); s
+```
+```{r}
+s<-seq( along = resData$Y); 
+str(s)
+```
+
+#### Subsetting variables
+
+```{r}
+
+resData$nearme <- resData$nghbrhd %in% c("Roland Park", "Homeland")
+table(resData$nearme)
+```
+#### Creating binary variables
+
+```{r}
+resData$lessThanHundred <- ifelse(resData$fid <100, T, F)
+table(resData$lessThanHundred, resData$fid <100)
+```
+#### Creating categorical variables
+Categorical variables are created from numeric variables through cut function
+
+```{r}
+resData$fidgroups <- cut(resData$fid, breaks = c(0, 20,40,60,80,100))
+table(resData$fidgroups, useNA = "ifany")
+```
+
+
+```{r}
+resData$fidgroups <- cut(resData$fid, breaks =  quantile(resData$fid))
+table(resData$fidgroups, useNA = "ifany")
+```
+#### Another way of doing it through Hmisc library
+```{r}
+# Use Hmisc library and cut2 function 
+library(Hmisc)
+resData$fidgroups <- cut2(resData$fid, g = 4)
+table(resData$fidgroups, useNA = "ifany")
+```
+```{r}
+resData$zip <- as.numeric(resData$zipcode)
+resData[1157, "zip"] <- 21226
+
+```
+Using the cut function again on numeric zip
+```{r}
+resData$zipgroups <- cut2(resData$zip, g=5)
+table(resData$zipgroups, useNA = "ifany")
+```
+```{r}
+table(resData$zip, resData$zipgroups, useNA = "ifany")
+```
+#### creating facor variables
+zip is a numeric variables and we can convert them into factor variable by using 
+factor function
+
+```{r}
+resData$zcf <- factor(resData$zip)
+resData$zcf[1:10]
+```
+#### Some more useful stuff ralated to factors
+```{r}
+set.seed(20)
+yesno <- sample(c('yes','no'), size = 20, replace = T)
+yesnofac <- factor(yesno, levels = c('yes' , 'no'))
+yesnofac
+```
+You can also convert factors into numeric values if you like to use in some kind
+of model - it's very useful
+```{r}
+as.numeric(yesnofac)
+
+yesnofac
+```
+#### Using mutate function to mutate and add factor variable to the new data set
+
+```{r}
+library(Hmisc); library(plyr)
+resData2 <- mutate(resData, zipGroups = cut2(zip, g=4))
+table(resData2$zipGroups, useNA = "ifany")
+                   
+```
+
+## Other useful function for transformation
+
+abs(x)	absolute value
+sqrt(x)	square root
+ceiling(x)	ceiling(3.475) is 4
+floor(x)	floor(3.475) is 3
+trunc(x)	trunc(5.99) is 5
+round(x, digits=n)	round(3.475, digits=2) is 3.48
+signif(x, digits=n)	signif(3.475, digits=2) is 3.5
+cos(x), sin(x), tan(x)	also acos(x), cosh(x), acosh(x), etc.
+log(x)	natural logarithm
+log10(x)	common logarithm
+exp(x)	e^x
+
+## Further reference
+
+[https://www.statmethods.net/management/functions.html](https://www.statmethods.net/management/functions.html)
+[plyr tutorial](https://plyr.had.co.nz/09-user/)
+
+
+

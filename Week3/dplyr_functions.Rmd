@@ -1,0 +1,117 @@
+---
+title: "dplyr function"
+author: "Sumit Kamra"
+date: "8/31/2021"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## dplyer function
+
+It is used to manipulate data frames. It can be used with data.tablble package 
+and rdbms. 
+
+#### Grammer of data manipulation
+* select: returns a subset of columns of the data frame
+* filter: returns a subset of the data frame
+* arrange: reorder rows 
+* rename: rename variables
+* mutate: adds columns or transforms existing 
+* summarise: generate summary statistics
+
+## Basic toold - dplyr package
+
+```{r}
+library(dplyr)
+# Downloading chicago.rds file from github
+
+chicago <- readRDS("chicago.rds")
+```
+
+### Select function
+```{r}
+head(select(chicago, city:date))
+```
+
+```{r}
+head(select(chicago, -(city:dptp)))
+```
+
+## filter function
+```{r}
+chic.f <- filter(chicago, (pm10tmean2 > 30 & dptp <30))
+head(chic.f)
+```
+## arrange function
+```{r}
+chic.s <- arrange(chicago, desc(date))
+tail(chic.s)
+```
+
+
+## renam function
+```{r}
+chicago <- rename (chicago, pm25 = pm25tmean2, dewpoint=dptp)
+names(chicago)
+```
+## mutate function
+```{r}
+chicago <- mutate(chicago, pm25trend = pm25 - mean(pm25, na.rm = TRUE))
+tail(select(chicago, pm25, pm25trend))
+```
+
+#### Creating factor variables
+```{r}
+chicago <- mutate(chicago, tempcat = factor(1 * (tmpd >80), labels = 
+                                                    c("Cold", "Hot")))
+head(select(filter(chicago, tmpd>80), tmpd, tempcat))
+```
+
+#### Using group_by
+```{r}
+hotcold <- group_by(chicago, tempcat)
+hotcold
+```
+
+#### Summarizing data after group_by
+
+```{r}
+summarise(hotcold, pm25_mean=mean(pm25, na.rm = T), 
+          pm10_median= median(pm10tmean2, na.rm = T))
+```
+#### Summarising by year
+1. Mutate to add a categorical year variable in the data
+2. Group by the year variable
+3. summarise the data through summarise function
+```{r}
+chicago <- mutate(chicago, year = as.POSIXlt(date)$year+1900)
+head(chicago)
+```
+
+```{r}
+years <- group_by(chicago, year)
+summarise(years, pm25_m = mean(pm25, na.rm = T), 
+          dp_avg = mean(dewpoint, na.rm = T) )
+```
+## Pipeline operator
+The pipeline operator is %>% where you can pass the data frame through a pipeline
+of operations. 
+```{r}
+chicago %>% mutate(month = as.POSIXlt(date)$mon+1) %>% group_by(
+        month) %>% summarise(dp_mean = mean(dewpoint, na.rm=T), 
+                             dp_median = median(dewpoint, na.rm = T),
+                             pm25_ave = mean(pm25, na.rm=T)) 
+
+```
+## dplyr can work with 
+* Work with data table package
+* SQL interface for RDBMS
+
+
+
+
+
+

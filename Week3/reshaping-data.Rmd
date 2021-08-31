@@ -1,0 +1,79 @@
+---
+title: "Reshaping Data"
+author: "Sumit Kamra"
+date: "8/30/2021"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Reshaping Data
+#### Use library reshape2
+
+```{r}
+library(reshape2)
+head(mtcars)
+```
+## Melting data frames
+```{r}
+mtcars$carname <- rownames(mtcars)
+carMelt <- melt(mtcars, id=c("carname", "gear", "cyl"), 
+                measure.vars = c("mpg", "hp") )
+head(carMelt)
+tail(carMelt)
+```
+Create bunch of id values and melt all the values - converting into a tall and 
+skinny data set. 
+
+## Reacsting the data 
+Let's recast the data by gears by using the dcast function. 
+```{r}
+gearData <- dcast(carMelt, gear ~ variable)
+gearData        
+```
+This tells us how many observations we have for mpg and hp for different gears
+```{r}
+gearData <- dcast(carMelt, gear ~ variable, mean)
+gearData
+```
+## Averaging values
+```{r}
+head(InsectSprays)
+```
+*The function below applies to count, along sprays, the function sum* 
+```{r}
+tapply(InsectSprays$count, InsectSprays$spray, sum)
+```
+## Split, apply, combine
+```{r}
+spIns <- split(InsectSprays$count, InsectSprays$spray)
+spIns
+```
+
+```{r}
+sprCount <- lapply(spIns, sum)
+sprCount
+```
+```{r}
+unlist(sprCount)
+```
+
+## plyr function 
+```{r}
+library(plyr)
+ddply(InsectSprays, .(spray), summarise, sum = sum(count), 
+      average = round(mean(count),2))
+```
+
+
+## References
+[Interesting tutorial for data reshaping](https://www.slideshare.net/jeffreybreen/reshaping-data-in-r)  
+
+[R Blogger: A quick primer on split apply combine problems](https://www.r-bloggers.com/2011/12/a-quick-primer-on-split-apply-combine-problems/)
+
+...
+
+
+

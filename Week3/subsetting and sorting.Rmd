@@ -1,0 +1,72 @@
+---
+title: "Subsetting and Sorting"
+author: "Sumit Kamra"
+date: "8/29/2021"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Subsetting
+Let's start with loading airquality database. 
+
+```{r loaddata}
+data("airquality")
+set.seed(10)
+dat <- airquality[sample(1:153, 50),] 
+head(dat)
+```
+
+###### Subsetting both rows and columns.
+```{r subsetexamples}
+dat[c(1,2,3), "Ozone"]
+
+```
+##### Subsetting using logical statement
+```{r}
+dat[(dat$Month==6 | dat$Month== 7),]
+```
+
+##### Subsetting on rows with NA (missing values) -- use which command
+which command returns the indices 
+```{r}
+dat[which((dat$Month==6 | dat$Month== 7) & dat$Ozone <50),]
+```
+
+## Sorting values
+##### Sort using sort function which sorts in a ascending order
+
+```{r}
+sort(dat$Ozone)
+```
+```{r}
+sort(dat$Ozone, decreasing = T)
+```
+```{r}
+sort(dat$Ozone, na.last = TRUE)
+```
+##### USe order function to sort a data frame.
+
+```{r}
+dat[order(dat$Month, dat$Temp),]
+```
+
+##### Use plyr package to sort the data frame
+```{r}
+library(plyr)
+head(arrange(dat, Ozone), 5)
+
+```
+```{r}
+head(arrange(dat, -Ozone))
+```
+##### Adding new columns to the data frame
+```{r}
+dat$TempCel <- round(((dat$Temp - 32) * 5 / 9), 1)
+head(dat)
+```
+You can also do it through cbind and rbind
+
+

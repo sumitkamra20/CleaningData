@@ -1,0 +1,110 @@
+---
+title: "Summarizing Data"
+author: "Sumit Kamra"
+date: "8/30/2021"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Summarizing Data
+
+```{r}
+resData <- read.csv("Restaurants.csv")
+head(resData, 3)
+tail(resData, 3)
+```
+```{r}
+summary(resData)
+```
+#### quantile function
+```{r}
+quantile(resData$Y, na.rm = T)
+```
+
+```{r}
+quantile(resData$Y, probs = c(0, 0.5, 0.9), na.rm = T)
+```
+#### table function 
+```{r}
+table(resData$zipcode, useNA = "ifany")
+```
+#### Two dimensional table
+```{r}
+table(resData$zipcode, resData$cncldst, useNA = "ifany")
+```
+#### Count the numbers of NAs for a column
+
+```{r}
+sum(is.na(resData$zipcode))
+```
+
+
+```{r}
+sum(is.na(resData$url))
+```
+#### Using any function to check if any of the values is na
+
+```{r}
+any(is.na(resData$prcl_pin))
+```
+
+#### all() function checks if every value satifies the condition
+
+```{r}
+all(resData$zipcode > 0)
+```
+
+```{r}
+colSums(is.na(resData))
+```
+
+#### Value with specific characteritics 
+
+```{r}
+table(resData$zipcode %in% "21212")
+```
+
+
+```{r}
+table(resData$zipcode %in% c("21212", "21213"))
+```
+
+#### use the %in% for subsetting
+```{r}
+head(resData[resData$zipcode %in% c("21212", "21213"), ], 3)
+
+```
+
+## Crosstabs 
+```{r}
+data("UCBAdmissions")
+mydat <- as.data.frame(UCBAdmissions)
+summary(mydat)
+```
+## Cross Tabs
+#### Using xtabs function
+
+```{r}
+xtabs(Freq ~ Gender + Admit, data = mydat)
+```
+```{r}
+xtabs(Freq ~ Dept + Admit, data = mydat)
+```
+#### Three dimensional xtabs and use of flat tabs
+```{r}
+xtabs(Freq ~ Gender + Admit + Dept, data = mydat)
+```
+#### This can also be written as . => means ALL 
+```{r}
+xt <- xtabs(Freq ~ ., data = mydat)
+ftable(xt)
+```
+```{r}
+fakeData <- rnorm(1e5)
+object.size(fakeData)
+print(object.size(fakeData), units = "MB")
+```
+
