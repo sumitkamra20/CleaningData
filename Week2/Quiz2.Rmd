@@ -1,0 +1,65 @@
+---
+title: "Quiz 2"
+author: "Sumit Kamra"
+date: "8/29/2021"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Q1: Creating API connection with github 
+[Tutorial for setting API connection with Github](https://github.com/r-lib/httr/blob/master/demo/oauth2-github.r)
+
+[Youtube tutorial for Q1](https://www.youtube.com/watch?v=xCPWRP_WqYQ)
+
+## Q2: sqldf package:
+The sqldf package allows for execution of SQL commands on R data frames. We will use the sqldf package to practice the queries we might send with the dbSendQuery command in RMySQL. 
+
+# Download data into R
+```{r}
+download.file("https://d396qusza40orc.cloudfront.net/getdata%2Fdata%2Fss06pid.csv", 
+              destfile = 'communitysurvey.csv', method = 'curl')
+
+              
+```
+read file as CSV
+```{r}
+acs <- read.csv("communitysurvey.csv")
+```
+
+Using SQL commands through sqldf package
+
+```{r}
+library(RMySQL)
+detach("package:RMySQL", unload=TRUE)
+library(sqldf)
+
+# After this all the SQL commands will run on the data.frame object
+
+```
+
+## Question 4: Reading HTML files
+
+```{r}
+con <- url('https://www.biostat.jhsph.edu/~jleek/contact.html')
+htmlText <- readLines(con)
+close(con)
+```
+
+
+
+
+```{r}
+library(httr)
+library(XML)
+urlText <- 'https://www.biostat.jhsph.edu/~jleek/contact.html'
+con <- GET(urlText)
+htmlText <- content(con, as="text")
+```
+
+
+
+
+
