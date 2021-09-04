@@ -1,0 +1,90 @@
+---
+title: "Quiz 3"
+author: "Sumit Kamra"
+date: "9/2/2021"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Q1: Read tabular data
+#### Download data and store 
+
+```{r}
+download.file("https://d396qusza40orc.cloudfront.net/getdata%2Fdata%2Fss06hid.csv", 
+              destfile = "communities.csv", method = "curl")
+com_data <- read.csv("communities.csv")
+```
+#### Converting the data into tibble
+```{r}
+library(tibble)
+com_tbl <- as_tibble(com_data)
+```
+
+#### Load dplyr and use data grammer
+```{r}
+library(dplyr)
+agricultureLogical <- com_tbl$AGS == 6 & com_tbl$ACR == 3
+        
+```
+
+## Q2: Reading image data
+```{r}
+library(jpeg)
+img_url <- "https://d396qusza40orc.cloudfront.net/getdata%2Fjeff.jpg"
+download.file(img_url, destfile = "pic.jpg", mode = "wb")
+img <- readJPEG("pic.jpg", native = TRUE)
+```
+```{r}
+quantile(img, probs = c(0.3,0.8))
+```
+## Q3: GDP and EDUCATIONAL DATA 
+```{r}
+download.file("https://d396qusza40orc.cloudfront.net/getdata%2Fdata%2FGDP.csv",
+              destfile = "gdp.csv", method = "curl")
+
+download.file("https://d396qusza40orc.cloudfront.net/getdata%2Fdata%2FEDSTATS_Country.csv",
+              destfile = "education.csv", method = "curl")
+
+gdp <- read.csv("gdp.csv")
+gdp <- gdp[5:194,]
+edu <- read.csv("education.csv")
+```
+
+```{r}
+merged_data<-merge(gdp, edu, by.x = "X", by.y = "CountryCode", all = FALSE)
+```
+
+#### Total no of matches
+```{r}
+library(dplyr)
+merged_data <- as_tibble(merged_data)
+nrow(merged_data)
+merged_data <- rename(merged_data, gdp = Gross.domestic.product.2012 )
+merged_data$gdp <- as.numeric(merged_data$gdp)
+```
+
+```{r}
+merged_data <- arranged_data <- arrange(merged_data, desc(gdp))
+merged_data[13,c("X", "gdp", "X.2")]
+```
+
+```{r}
+arranged_data[13,]
+```
+## Q4: OCED VS NON-OCED DATA
+```{r}
+oced <- group_by(merged_data, Income.Group)
+summarise(oced, mean(gdp))
+```
+
+## Q5: Cut the data by GDP
+```{r}
+bygdp <- mutate(merged_data, cut(merged_data$gdp, 5))
+bygdp <- rename(bygdp, "gdpgroup" = "cut(merged_data$gdp, 5)")
+table(bygdp$Income.Group, bygdp$gdpgroup)
+```
+
+
