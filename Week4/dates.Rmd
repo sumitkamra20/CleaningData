@@ -1,0 +1,73 @@
+---
+title: "Working with Dates"
+author: "Sumit Kamra"
+date: "9/8/2021"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Date class
+```{r}
+d1<- date()
+d1
+```
+```{r}
+class(d1)
+```
+```{r}
+d2<- Sys.Date()
+d2
+```
+```{r}
+class(d2)
+```
+#### Formatting dates using format function
+%d - day as number
+%a - abbreviated weekday
+%A - unabbreviated weekday 
+%m - month in numbers 
+%b - abbreviated month
+%B - unabbreviated month
+%y - yy
+%Y - yyyy
+
+```{r}
+format(d2, "%d %a %A %m %b %B %y %Y" )
+```
+
+```{r}
+x <- c("1jan2020", "30oct1999", "31mar2006")
+z<- as.Date(x, "%d %b %Y")
+z
+```
+
+```{r}
+z[1] - z[2]
+```
+```{r}
+as.numeric(z[1] - z[2])
+```
+```{r}
+weekdays(d2)
+months(d2)
+julian(d2)
+```
+```{r}
+library(lubridate)
+
+d3 <- now()
+d3
+wday(d3, label = TRUE)
+```
+## Further references
+* [CRAN Vignettes](https://cran.r-project.org/web/packages/lubridate/vignettes/lubridate.html)
+* [Github lubridate development project](https://github.com/tidyverse/lubridate)
+* [R statistic tutorial](https://www.r-statistics.com/2012/03/do-more-with-dates-and-times-in-r-with-lubridate-1-1-0/)
+
+
+
+
+

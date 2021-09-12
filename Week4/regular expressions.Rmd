@@ -1,0 +1,65 @@
+---
+title: "Regular Expressions"
+author: "Sumit Kamra"
+date: "9/6/2021"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Regular Expressions 
+Regular expressions are a combination of literals and metacharacters.   
+
+Regular expressions have rich set of metacharacters to look for.  
+
+* ^I think --> Search at the beginning of the line
+* morning$ --> represent the end of the line
+* [Bb][Uu][Ss][Hh] --> [] represents alternatives
+* [Ii] am --> start to combining twp expressions
+* [a-z] --> range of letters 
+* [0-9] [a-zA-Z] --> Will look for any expressions starting with a number followed
+ by any capital or small letter. 
+* [^.?]$ --> ^ inside [] indicates the exclusion of the characters. 
+
+
+#### Further important metachatacters:
+
+* . --> . means anything, so 9.11 would search 9/11 or 9-11
+* | mean alternatives --> so flood|earthquake|calamity would search any of the expressions
+* Mixing them up: ^[Gg]ood|[Bb]ad --> Search for lines with Good at the 
+beginning and Bad anywhere.
+* ? means optional: --> [Gg]eorge( [Ww]\.)? [Bb]ush) makes W/w optional 
+**The escape characters is used to denote . as a literal and not metacharacter**
+* * means repeat any number of times
+* (.*) means anything within parentheses
+* + means containing atleast one of them
+* [0-9]+ (.*) [0-9]+ 
+* {} to denote the range of words
+* Example --> [Bb]ush( +[^ ]+ +){1,5} debate
+* () can be used to remember text and used by escape characters \1, \2 etc. 
+*  +([a-zA-Z]+) +\1+ 
++ This will match 
++ night night 
++ blah blah blah
+* ^s(.*)s --> somethign that starts with an 's' and end with an 's'
++ However this will search for the longest possible expression
+* Change the greediness through ? 
++ ^s(.*?) will change the greediness and look for shorter epressions
+
+
+**These are typically used with functions such as grep, grepl, sub, gsub or others
+that are used for string search** 
+
+
+
+
+
+
+
+
+
+
+
+

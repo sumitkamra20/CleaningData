@@ -1,0 +1,108 @@
+---
+title: "Editing Text Variables"
+author: "Sumit Kamra"
+date: "9/5/2021"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+## Summary of the functions covered in the module
+* tolower()
+* toupper()
+* strsplit()
+* sub() 
+* gsub()
+* grep()
+* grepl()
+* nchar()
+* substr()
+* paste()
+* paste0()
+
+
+## Editing text variables
+
+```{r}
+cameraData <- read.csv("Fixed_Speed_Cameras.csv")
+names(cameraData)
+```
+#### Modifying the names of the variables
+```{r}
+tolower(names(cameraData))
+```
+```{r}
+toupper(names(cameraData))
+```
+#### Removing dots from variable names
+```{r}
+names(cameraData)
+```
+```{r}
+splitNames <- strsplit(names(cameraData), "\\.")
+splitNames[[1]]
+```
+```{r}
+firstElement <- function(x) x[[1]]
+names(cameraData) <- sapply(splitNames, firstElement)
+names(cameraData)[[1]] <- "i"
+names(cameraData)
+```
+
+```{r}
+library(dplyr)
+cameraData <- rename(cameraData, id_name = i, fid_id = fid)
+names(cameraData)
+```
+#### Removing the special characters from the variable names
+```{r}
+sub("_", "", names(cameraData))
+```
+#### sub only replaces first underscore
+```{r}
+testName <- "this_is_my_name"
+sub("_", "", testName)   ## Replaces first underscore
+gsub("_", "", testName)  ## Replaces all underscores
+
+```
+## Searching for specific values in variables
+
+```{r}
+## Looking for Ave
+grep("Ave", cameraData$street)
+
+table(grep("Ave", cameraData$street))
+
+table(grepl("Ave", cameraData$street))
+
+```
+#### Can also subset by grepl
+```{r}
+cameraData[grepl("Ave", cameraData$street),]
+```
+
+```{r}
+grep("Ave", cameraData$street, value = TRUE)
+```
+```{r}
+grep("JeffStreet", cameraData$street)
+length(grep("JeffStreet", cameraData))
+```
+## Library stringr
+```{r}
+library(stringr)
+nchar("Sumit Kamra")
+
+```
+
+```{r}
+substr("Sumit Kamra", 2, 4) ## both indices are inclusive
+```
+
+```{r}
+paste("Sumit", "Kamra", sep = "-")
+paste0("Hi", "How", "are")
+```
+
+

@@ -1,0 +1,32 @@
+---
+title: "Data Resources"
+author: "Sumit Kamra"
+date: "9/11/2021"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Useful data resources
+
+### Govt. Data Sources
+* [http://data.un.org/](http://data.un.org/)
+* [List of all open data sources](https://www.data.gov/open-gov/)
+
+#### Gapminder data on human health and misconceptions
+[**https://www.gapminder.org/**](https://www.gapminder.org/)
+
+#### Survey data from asdfree
+[**http://asdfree.com/**](http://asdfree.com/)
+
+#### Infochimps data from Github
+[**https://github.com/infochimps-data/infochimps-data**](https://github.com/infochimps-data/infochimps-data)
+
+#### Kaggle 
+Kaggle is extremely useful hosting many interesting datasets and competition
+for machine learning and big data.  
+[**https://www.kaggle.com**](https://www.kaggle.com)
+
+**FOR OTHER SPECIALIZED COLLECTION OF DATASETS REFER TO PDF DATA RESOURCES.PDF**
